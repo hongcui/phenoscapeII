@@ -5,20 +5,20 @@ package preprocessing;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.BufferedOutputStream;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
 
-import org.jdom.Attribute;
-import org.jdom.Content;
-import org.jdom.DefaultJDOMFactory;
-import org.jdom.Document;
+
 import org.jdom.Element;
-import org.jdom.input.SAXBuilder;
+import org.jdom.Document;
+import org.jdom.output.Format;
 import org.jdom.output.XMLOutputter;
-import org.jdom.xpath.XPath;
+
+
 
 
 /**
@@ -44,7 +44,21 @@ public class SourceXMLFileCreator {
 	 * constructor
 	 */
 	public SourceXMLFileCreator(String tablename, String outputdir, String database, String tableprefix) {
-		this.output = new File(outputdir);
+		this.output = new File(outputdir);		
+		if(output.exists()){
+			File[] all = this.output.listFiles();
+			for(int i =0; i<all.length; i++){
+				all[i].delete();
+			}
+			if(output.delete()){
+				System.out.println("existing output folder removed");
+			}else{
+				System.out.println("existing output folder can not be removed");
+				System.exit(1);
+			}
+		}
+		output.mkdirs();
+		
 		this.database = database;
 		this.tableprefix = tableprefix;
 		this.sourcetable = tableprefix+"_"+tablename;
@@ -61,14 +75,17 @@ public class SourceXMLFileCreator {
 
 	public void outputXMLFiles(){
 		try{
-			Element root = new Element("treatment");
+			
 			Statement stmt = conn.createStatement();
 			ResultSet rs = stmt.executeQuery("select distinct source from "+this.sourcetable);
 			while(rs.next()){
 				String src = rs.getString("source");
 				Statement stmt1 = conn.createStatement();
-				ResultSet rs1 = stmt1.executeQuery("select characterr, sentence from "+this.sourcetable+" where source='"+src+"'");
+				String q = "select distinct characterr, sentence from "+this.sourcetable+" where source='"+src+"'";
+				ResultSet rs1 = stmt1.executeQuery(q);
 				boolean ch = false;
+				Element root = new Element("treatment");
+				StringBuffer sb = new StringBuffer();
 				while(rs1.next()){//one character + n sentences
 					if(!ch){
 						Element chara = new Element("character");
@@ -76,13 +93,19 @@ public class SourceXMLFileCreator {
 						root.addContent(chara);
 						ch = true;
 					}
-					Element descr = new Element("description");
-					descr.setText(rs1.getString("sentence").trim());
-					root.addContent(descr);					
+					sb.append(rs1.getString("sentence").trim()+" ");
 				}
+				Element descr = new Element("description");
+				String text = sb.toString().trim();
+				text = text.matches("[\\.;]$")? text : text+"."; 
+				descr.setText(text);
+				root.addContent(descr);
+				root.detach();
 				//output doc
-				XMLOutputter out = new XMLOutputter();
-				out.output(root, new FileOutputStream(new File(this.output, src)));
+				XMLOutputter out = new XMLOutputter(Format.getPrettyFormat());
+				String filename = src.replaceAll(" ", "")+".xml";
+				out.output(new Document(root), new BufferedOutputStream(new FileOutputStream(new File(this.output, filename))));
+				System.out.println("Write "+filename);
 			}
 		}catch(Exception e){
 			e.printStackTrace();
