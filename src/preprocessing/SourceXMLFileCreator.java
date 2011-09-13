@@ -50,14 +50,7 @@ public class SourceXMLFileCreator {
 			for(int i =0; i<all.length; i++){
 				all[i].delete();
 			}
-			if(output.delete()){
-				System.out.println("existing output folder removed");
-			}else{
-				System.out.println("existing output folder can not be removed");
-				System.exit(1);
-			}
 		}
-		output.mkdirs();
 		
 		this.database = database;
 		this.tableprefix = tableprefix;
