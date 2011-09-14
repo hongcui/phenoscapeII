@@ -67,8 +67,7 @@ public class SourceXMLFileCreator {
 	}
 
 	public void outputXMLFiles(){
-		try{
-			
+		try{			
 			Statement stmt = conn.createStatement();
 			ResultSet rs = stmt.executeQuery("select distinct source from "+this.sourcetable);
 			while(rs.next()){
@@ -86,7 +85,9 @@ public class SourceXMLFileCreator {
 						root.addContent(chara);
 						ch = true;
 					}
-					sb.append(rs1.getString("sentence").trim()+" ");
+					String sent = rs1.getString("sentence").trim();
+					sent = sent.matches("[\\.;]$")? sent : sent+";"; 
+					sb.append(sent+" ");
 				}
 				Element descr = new Element("description");
 				String text = sb.toString().trim();
