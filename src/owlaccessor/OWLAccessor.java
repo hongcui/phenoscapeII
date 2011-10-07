@@ -14,7 +14,7 @@ import org.semanticweb.owlapi.model.OWLClass;
  *
  */
 public interface OWLAccessor {
-	public void retrieveConcept(String con);
+	public List<OWLClass> retrieveConcept(String con);
 //	public void showClass(OWLClass c, OWLOntology o);
 //	public void showSuperClass(OWLClass c, OWLOntology o, int depth);
 //	public List<OWLClass> getParent(OWLClass c, OWLOntology o);
