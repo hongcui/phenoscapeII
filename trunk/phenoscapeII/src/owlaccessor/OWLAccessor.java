@@ -26,5 +26,6 @@ public interface OWLAccessor {
 	public List<OWLClass> getParent(OWLClass c);
 	public List<OWLClass> getAncestors(OWLClass c);
 	public Set<OWLAnnotation> getExactSynonyms(OWLClass c);
+	public Set<String> getKeywords(OWLClass c);
 
 }
