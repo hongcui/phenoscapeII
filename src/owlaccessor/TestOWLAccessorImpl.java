@@ -94,11 +94,17 @@ public class TestOWLAccessorImpl {
 		}*/
 		
 	}
+	@Test
+	public void testGetKeyWords(){
+		
+		
+	}
 	public static void main(String[] args) {
 		TestOWLAccessorImpl to = new TestOWLAccessorImpl();
 		String path="C:/Documents and Settings/Hong Updates/Desktop/Australia/phenoscape-fish-source/tao.owl";
 		to.searchOntology("aorta", path, "TAO");
 		
 	}
+	
 
 }

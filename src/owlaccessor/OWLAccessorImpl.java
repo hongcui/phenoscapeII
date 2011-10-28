@@ -56,6 +56,11 @@ public class OWLAccessorImpl implements OWLAccessor {
 		}
 		//System.out.println(ont);
 	}
+	@Override
+	public Set<String> getKeywords(OWLClass c){
+		OWLAnnotation definition = c.getAnnotations(ont, df.getOWLAnnotationProperty(IRI.create("http://purl.obolibrary.org/obo/IAO_0000115")));
+		System.out.println(definition.toString());
+	}
 	
 	/* (non-Javadoc)
 	 * @see owlaccessor.OWLAccessor#retrieveConcept(java.lang.String)
