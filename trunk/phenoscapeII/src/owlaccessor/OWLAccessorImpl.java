@@ -31,23 +31,13 @@ public class OWLAccessorImpl implements OWLAccessor {
 	public OWLAccessorImpl(String ontoURL) {
 		manager = OWLManager.createOWLOntologyManager();
 		df = manager.getOWLDataFactory();
-
-		// access TAO Ontology on web
-		// IRI iri =
-		// IRI.create("http://www.berkeleybop.org/ontologies/tao.owl");
-		// access PATO Ontology on web
 		IRI iri = IRI.create(ontoURL);
-		// IRI iri =
-		// IRI.create("http://www.berkeleybop.org/ontologies/pato.owl");
-		// IRI
-		// iri=IRI.create("http://www.co-ode.org/ontologies/pizza/pizza.owl");
 		try {
 			ont = manager.loadOntologyFromOntologyDocument(iri);
 		} catch (OWLOntologyCreationException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		// System.out.println(ont);
 	}
 
 	public OWLAccessorImpl(File file) {
@@ -60,7 +50,6 @@ public class OWLAccessorImpl implements OWLAccessor {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		// System.out.println(ont);
 	}
 
 	@Override
@@ -173,36 +162,6 @@ public class OWLAccessorImpl implements OWLAccessor {
 	}
 
 	@Override
-	public void showClass(OWLClass c) {
-		System.out.println("URL: \n" + c.toString());
-
-		System.out.println();
-
-		System.out.println("Labels: ");
-		for (OWLAnnotation l : this.getLabels(c)) {
-			System.out.println(this.getRefinedOutput(l.getValue().toString()));
-		}
-
-		System.out.println();
-
-		System.out.println("Synonyms: ");
-		for (OWLAnnotation s : this.getExactSynonyms(c)) {
-			System.out.println(this.getRefinedOutput(s.getValue().toString()));
-		}
-
-		System.out.println("++++++++");
-
-	}
-
-	@Override
-	public void showSuperClass(OWLClass c, int d) {
-		// System.out.println("SuperClass of Depth "+d+":");
-		// for(OWLClassExpression p:c.getSuperClasses(o)){
-		// this.showClass(p.asOWLClass(), o);
-		// }
-	}
-
-	@Override
 	public List<OWLClass> getAncestors(OWLClass c) {
 		List<OWLClass> result = new ArrayList<OWLClass>();
 		this.getAncestorsHelper(c, result);
@@ -228,7 +187,6 @@ public class OWLAccessorImpl implements OWLAccessor {
 		return parent;
 	}
 
-	@Override
 	public Set<OWLAnnotation> getExactSynonyms(OWLClass c) {
 		return c.getAnnotations(
 				ont,
@@ -243,20 +201,18 @@ public class OWLAccessorImpl implements OWLAccessor {
 						.create("http://www.geneontology.org/formats/oboInOwl#hasRelatedSynonym")));
 	}
 
-	@Override
 	public Set<OWLAnnotation> getLabels(OWLClass c) {
 		return c.getAnnotations(ont, df
 				.getOWLAnnotationProperty(OWLRDFVocabulary.RDFS_LABEL.getIRI()));
 	}
 
+	@Override
 	public String getLabel(OWLClass c) {
-		OWLAnnotation label = (OWLAnnotation) c.getAnnotations(
-				ont,
-				df.getOWLAnnotationProperty(OWLRDFVocabulary.RDFS_LABEL
-						.getIRI())).toArray()[0];
+		OWLAnnotation label = (OWLAnnotation) this.getLabels(c).toArray()[0];
 		return this.getRefinedOutput(label.getValue().toString());
 	}
-
+	
+	@Override
 	public ArrayList<String> getSynonymLabels(OWLClass c) {
 		ArrayList<String> labels = new ArrayList<String>();
 		Set<OWLAnnotation> anns = getExactSynonyms(c);
