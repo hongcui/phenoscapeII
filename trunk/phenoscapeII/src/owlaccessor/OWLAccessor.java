@@ -11,7 +11,7 @@ import org.semanticweb.owlapi.model.OWLAnnotation;
 import org.semanticweb.owlapi.model.OWLClass;
 
 /**
- * @author Zilong Chang
+ * @author Zilong Chang, Hong Cui
  *
  */
 public interface OWLAccessor {

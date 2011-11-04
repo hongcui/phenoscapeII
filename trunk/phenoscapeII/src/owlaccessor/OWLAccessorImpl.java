@@ -18,7 +18,7 @@ import org.semanticweb.owlapi.vocab.OWLRDFVocabulary;
 
 //import org.semanticweb.owlapi.util.SimpleIRIMapper;
 /**
- * @author Zilong Chang
+ * @author Zilong Chang, Hong Cui
  * 
  */
 
@@ -61,12 +61,13 @@ public class OWLAccessorImpl implements OWLAccessor {
 		 }else{
 			 Set<String> tresult = new HashSet<String>();
 			 OWLAnnotation orgdef = (OWLAnnotation) ds.toArray()[0];
-			 String def=this.getRefinedOutput(orgdef.toString()).replaceFirst("^A .* quality inhering in a bearer", "");
+			 String def=this.getRefinedOutput(orgdef.toString()).replaceFirst("quality inhering in a bearer by virtue of the bearer's", "");
 			 StringTokenizer st = new StringTokenizer(def);
 			 while (st.hasMoreTokens()){
-				 String temp = st.nextToken().trim();
-				 if (!wf.isInList(temp))				 
+				 String temp = st.nextToken().replaceAll("\\\\", "").trim().toLowerCase();
+				 if (!wf.isInList(temp)){				 
 					 tresult.add(temp);
+				 }
 			 }
 			 return tresult;
 		 }
