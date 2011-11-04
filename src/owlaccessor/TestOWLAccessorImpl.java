@@ -1,23 +1,10 @@
 package owlaccessor;
 
-import static org.junit.Assert.*;
-
 import java.io.File;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
-
 import org.junit.Test;
-import org.semanticweb.owlapi.apibinding.OWLManager;
-import org.semanticweb.owlapi.model.IRI;
-import org.semanticweb.owlapi.model.OWLAnnotation;
 import org.semanticweb.owlapi.model.OWLClass;
-import org.semanticweb.owlapi.model.OWLEntity;
-import org.semanticweb.owlapi.model.OWLOntology;
-import org.semanticweb.owlapi.model.OWLOntologyCreationException;
-import org.semanticweb.owlapi.model.OWLOntologyManager;
-
-import conceptmapping.TermOutputer;
 
 public class TestOWLAccessorImpl {
 	

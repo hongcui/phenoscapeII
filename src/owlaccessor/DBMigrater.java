@@ -15,18 +15,31 @@ public class DBMigrater {
 	 */
 	private Connection con;
 	private Statement stmt;
+	private String path = "C:/Users/Zilong Chang/Documents/WORK/Ontology/pato.owl";
+	private String dburl = "jdbc:mysql://localhost:3306/phenoscape";
+	private String uname= "termsuser";
+	private String upw = "termspassword";
 	
-	public DBMigrater(){
+	public void work(){
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
 			try {
-				con = DriverManager.getConnection("jdbc:mysql://localhost:3306/","termsuser", "termspassword");
-				OWLAccessor oa = new OWLAccessorImpl(new File("C:/Users/Zilong Chang/Documents/WORK/Ontology/pato.owl"));
+				con = DriverManager.getConnection(dburl, uname, upw);
+				stmt = con.createStatement();
+				OWLAccessor oa = new OWLAccessorImpl(new File(path));
 				for (OWLClass c : oa.getAllClasses()){
 					Set<String> kw =oa.getKeywords(c);
-					oa.getLabels(c);
-					if (!kw.isEmpty()){
+					String label = oa.getLabel(c);
+					if (!kw.isEmpty()&&!label.equals("")){
+						for (String s : kw){
+							try{
+								stmt.executeUpdate("INSERT INTO patokeywords(term, keyword) VALUES ('"+label.trim().replaceAll("'", "''")+"','"+s.trim().replaceAll("'", "''")+"')");
 						
+							}catch(SQLException e){
+								e.printStackTrace();
+								continue;
+							}
+						}
 					}
 				}
 			} catch (SQLException e) {
@@ -39,8 +52,11 @@ public class DBMigrater {
 		}
 		
 	}
+	
 	public static void main(String[] args) {
-		
+		DBMigrater dbm = new DBMigrater();
+		dbm.work();
+		System.out.println("DONE!");
 
 	}
 
