@@ -76,8 +76,7 @@ public class OWLAccessorImpl implements OWLAccessor {
 			 StringTokenizer st = new StringTokenizer(def);
 			 while (st.hasMoreTokens()){
 				 String temp = st.nextToken().trim();
-				 if (!wf.isInList(temp))
-				 //need change, replace this with a list/database of irrelevant words
+				 if (!wf.isInList(temp))				 
 					 tresult.add(temp);
 			 }
 			 return tresult;
@@ -269,5 +268,11 @@ public class OWLAccessorImpl implements OWLAccessor {
 			labels.add(this.getRefinedOutput(it.next().toString()));
 		}
 		return labels;
+	}
+
+	@Override
+	public Set<OWLClass> getAllClasses() {
+		// TODO Auto-generated method stub
+		return ont.getClassesInSignature();
 	}
 }
