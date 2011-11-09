@@ -84,44 +84,20 @@ public class OWLAccessorImpl implements OWLAccessor {
 		List<OWLClass> result = new ArrayList<OWLClass>();
 		try {
 			for (OWLClass c : ont.getClassesInSignature()) {
-				for (OWLAnnotation a : c.getAnnotations(ont)) {
-					// match class concepts and also the synonyms
-					ArrayList<String> syns = this.getSynonymLabels(c);
-					if (a.getProperty().isLabel()) {
-						String label = a.getValue().toString();
-						boolean syn = matchSyn(con, syns, "p");
-						if (label.contains(con) || label.equals(con) || syn) {
-							result.add(c);
-							if (syn && !label.contains(con)) {
-								System.out.println("syn+:" + con);
-							}
-							break;
-						}
+				// match class concepts and also the synonyms
+				List<String> syns = this.getSynonymLabels(c);
+				String label = this.getLabel(c);
+				boolean syn = matchSyn(con, syns, "p");
+				if (label.contains(con) || label.equals(con) || syn) {
+					result.add(c);
+					if (syn && !label.contains(con)) {
+						System.out.println("syn+:" + con);
 					}
+					break;
 				}
 			}
-
-			/*
-			 * for(OWLClass r:result){
-			 * System.out.println("======================================");
-			 * this.showClass(r);
-			 * 
-			 * System.out.println("--------------------------------------");
-			 * System.out.println("Ancestors: "); for(OWLClass
-			 * an:this.getAncestors(r)){ this.showClass(an); }
-			 * 
-			 * System.out.println("--------------------------------------");
-			 * System.out.println("Parents: "); for(OWLClass
-			 * p:this.getParent(r)){ this.showClass(p); }
-			 * 
-			 * System.out.println("======================================\n\n");
-			 * 
-			 * }
-			 */
-
 		} catch (Exception e) {
 			System.out.println(e);
-
 		}
 		return result;
 	}
@@ -134,7 +110,7 @@ public class OWLAccessorImpl implements OWLAccessor {
 	 *            : exact="e" or partial="p"
 	 * @return
 	 */
-	private boolean matchSyn(String label, ArrayList<String> synlabels,
+	private boolean matchSyn(String label, List<String> synlabels,
 			String mode) {
 		Iterator<String> it = synlabels.iterator();
 		while (it.hasNext()) {
@@ -179,7 +155,7 @@ public class OWLAccessorImpl implements OWLAccessor {
 	}
 
 	@Override
-	public List<OWLClass> getParent(OWLClass c) {
+	public List<OWLClass> getParents(OWLClass c) {
 		List<OWLClass> parent = new ArrayList<OWLClass>();
 		for (OWLClassExpression ce : c.getSuperClasses(ont)) {
 			if (!ce.isAnonymous())
@@ -208,13 +184,22 @@ public class OWLAccessorImpl implements OWLAccessor {
 	}
 
 	@Override
+	public List<String> getParentsLabels(OWLClass c){
+		List<String> result=new ArrayList<String>();
+		for (OWLClass p : this.getParents(c)){
+			result.add(this.getLabel(p));
+		}
+		return result;
+	}
+	
+	@Override
 	public String getLabel(OWLClass c) {
 		OWLAnnotation label = (OWLAnnotation) this.getLabels(c).toArray()[0];
 		return this.getRefinedOutput(label.getValue().toString());
 	}
 	
 	@Override
-	public ArrayList<String> getSynonymLabels(OWLClass c) {
+	public List<String> getSynonymLabels(OWLClass c) {
 		ArrayList<String> labels = new ArrayList<String>();
 		Set<OWLAnnotation> anns = getExactSynonyms(c);
 		anns.addAll(this.getRelatedSynonyms(c));

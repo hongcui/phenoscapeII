@@ -22,7 +22,32 @@ public class DBMigrater {
 	private String uname= "termsuser";
 	private String upw = "termspassword";
 	
-	public void work(){
+	public void migrateRelations(){
+		try {
+			Class.forName("com.mysql.jdbc.Driver");
+			try {
+				con = DriverManager.getConnection(dburl, uname, upw);
+				stmt = con.createStatement();
+				OWLAccessor oa = new OWLAccessorImpl(new File(path));
+				for (OWLClass c : oa.getAllClasses()){
+					if(oa.getParents(c).size()>1){
+						System.out.println(oa.getLabel(c)+"!!!!!!!!");
+					}
+				}
+				
+				con.close();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
+	
+	public void migrateKeyWords(){
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
 			try {
@@ -47,6 +72,8 @@ public class DBMigrater {
 						}
 					}
 				}
+				
+				con.close();
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -60,7 +87,8 @@ public class DBMigrater {
 	
 	public static void main(String[] args) {
 		DBMigrater dbm = new DBMigrater();
-		dbm.work();
+		dbm.migrateKeyWords();
+		dbm.migrateRelations();
 		System.out.println("DONE!");
 
 	}
