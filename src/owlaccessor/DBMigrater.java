@@ -30,8 +30,21 @@ public class DBMigrater {
 				stmt = con.createStatement();
 				OWLAccessor oa = new OWLAccessorImpl(new File(path));
 				for (OWLClass c : oa.getAllClasses()){
-					if(oa.getParents(c).size()>1){
-						System.out.println(oa.getLabel(c)+"!!!!!!!!");
+					String label = oa.getLabel(c);
+					for (String p : oa.getParentsLabels(c)){
+						stmt.executeUpdate("INSERT INTO patorelations(term, relative, relation) VALUES('"
+								+label.trim().replaceAll("'", "''")
+								+"','"
+								+p.trim().replaceAll("'", "''")
+								+"','pr')");	
+					}
+					
+					for (String syn : oa.getSynonymLabels(c)){
+						stmt.executeUpdate("INSERT INTO patorelations(term, relative, relation) VALUES('"
+								+label.trim().replaceAll("'", "''")
+								+"','"
+								+syn.trim().replaceAll("'", "''")
+								+"','sy')");
 					}
 				}
 				
@@ -88,7 +101,7 @@ public class DBMigrater {
 	public static void main(String[] args) {
 		DBMigrater dbm = new DBMigrater();
 		dbm.migrateKeyWords();
-		dbm.migrateRelations();
+		//dbm.migrateRelations();
 		System.out.println("DONE!");
 
 	}
