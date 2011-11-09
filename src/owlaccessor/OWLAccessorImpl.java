@@ -71,6 +71,7 @@ public class OWLAccessorImpl implements OWLAccessor {
 						 replaceAll("\\(", "").
 						 replaceAll("\\)", "").
 						 replaceAll(";", "").
+						 replaceAll(":", "").
 						 replaceAll(".*[0-9].*","").
 						 replaceAll(".*[+\\-*/].*", "").
 						 trim().toLowerCase();
