@@ -64,9 +64,20 @@ public class OWLAccessorImpl implements OWLAccessor {
 			 String def=this.getRefinedOutput(orgdef.toString()).replaceFirst("quality inhering in a bearer by virtue of the bearer's", "");
 			 StringTokenizer st = new StringTokenizer(def);
 			 while (st.hasMoreTokens()){
-				 String temp = st.nextToken().replaceAll("\\\\", "").trim().toLowerCase();
-				 if (!wf.isInList(temp)){				 
-					 tresult.add(temp);
+				 String temp = st.nextToken().
+						 replaceAll("\\\\", "").
+						 replaceAll(",", "").
+						 replaceAll("\\.", "").
+						 replaceAll("\\(", "").
+						 replaceAll("\\)", "").
+						 replaceAll(";", "").
+						 replaceAll(".*[0-9].*","").
+						 replaceAll(".*[+\\-*/].*", "").
+						 trim().toLowerCase();
+				 if(temp.length()>1){
+					 if (!wf.isInList(temp)){				 
+						 tresult.add(temp);
+					 }
 				 }
 			 }
 			 return tresult;
