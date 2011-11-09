@@ -15,7 +15,9 @@ public class DBMigrater {
 	 */
 	private Connection con;
 	private Statement stmt;
+	
 	private String path = "C:/Users/Zilong Chang/Documents/WORK/Ontology/pato.owl";
+	
 	private String dburl = "jdbc:mysql://localhost:3306/phenoscape";
 	private String uname= "termsuser";
 	private String upw = "termspassword";
@@ -33,7 +35,10 @@ public class DBMigrater {
 					if (!kw.isEmpty()&&!label.equals("")){
 						for (String s : kw){
 							try{
-								stmt.executeUpdate("INSERT INTO patokeywords(term, keyword) VALUES ('"+label.trim().replaceAll("'", "''")+"','"+s.trim().replaceAll("'", "''")+"')");
+								stmt.executeUpdate(
+										"INSERT INTO patokeywords(term, keyword) VALUES('"
+										+label.trim().replaceAll("'", "''")+"','"+
+										s.trim().replaceAll("'", "''")+"')");
 						
 							}catch(SQLException e){
 								e.printStackTrace();
